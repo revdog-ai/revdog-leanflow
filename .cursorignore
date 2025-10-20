@@ -1,0 +1,75 @@
+# Cursor AI - Files to Ignore
+
+# Dependencies
+node_modules/
+venv/
+env/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Build outputs
+dist/
+build/
+*.egg-info/
+.eggs/
+frontend/dist/
+frontend/build/
+
+# Data files (can be large)
+*.csv
+*.parquet
+*.h5
+*.hdf5
+data/
+Lean/Data/
+
+# Logs
+*.log
+logs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets
+.env
+*.key
+*.pem
+secrets/
+
+# Test coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Compiled binaries
+*.dll
+*.exe
+*.so
+*.dylib
+
+# Large documentation that's not code
+*.pdf
+*.docx
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+

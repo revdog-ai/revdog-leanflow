@@ -1,0 +1,120 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+venv/
+env/
+.venv/
+ENV/
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+dist/
+.pnpm-debug.log*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+logs/
+*.log
+
+# Data files (keep small test fixtures)
+data/*.csv
+results/
+*.parquet
+*.h5
+*.hdf5
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.hypothesis/
+
+# OS
+.DS_Store
+Thumbs.db
+*.bak
+*.tmp
+
+# LEAN Engine
+lean/Data/
+lean/Results/
+lean/Config/config_*.json  # Generated configs (not the base config)
+lean/Launcher/bin/
+lean/Launcher/obj/
+*.csproj.user
+revdog_leanflow.log  # LEAN strategy log file
+
+# Docker
+docker-compose.override.yml
+.dockerignore.local
+
+# Redis data
+redis_data/
+
+# Documentation (AI-generated - ignore all except README.md)
+docs/
+*.md
+!README.md
+
+# Build artifacts
+*.whl
+.next/
+out/
+
+# Jupyter notebooks (if added later)
+.ipynb_checkpoints/
+*.ipynb
+
+# MyPy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pytest
+.pytest_cache/
+test-results/
+
+# Coverage
+.coverage.*
+coverage.xml
+
+# Ruff
+.ruff_cache/

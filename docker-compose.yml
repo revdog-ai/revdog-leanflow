@@ -1,0 +1,63 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app/backend
+      - ./src:/app/src
+      - ./data:/app/data
+      - ./results:/app/results
+      - ./lean:/app/lean  # Mount LEAN directory
+      - /var/run/docker.sock:/var/run/docker.sock  # Enable Docker-in-Docker for LEAN
+    env_file:
+      - .env
+    environment:
+      - BACKEND_HOST=0.0.0.0
+      - BACKEND_PORT=8000
+      - LEAN_IMAGE=quantconnect/lean:latest
+      - LEAN_HOST_PATH=${PWD}/lean  # Host path for Docker-in-Docker
+    command: uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
+    depends_on:
+      - redis
+    networks:
+      - leanflow
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://backend:8000
+      - VITE_WS_URL=ws://backend:8000
+    command: npm run dev -- --host
+    depends_on:
+      - backend
+    networks:
+      - leanflow
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - leanflow
+
+volumes:
+  redis_data:
+
+networks:
+  leanflow:
+    driver: bridge
+

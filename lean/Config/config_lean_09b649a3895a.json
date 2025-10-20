@@ -1,0 +1,16 @@
+{
+  "environment": "backtesting",
+  "algorithm-type-name": "RevDogLeanFlow",
+  "algorithm-language": "Python",
+  "algorithm-location": "/Lean/Algorithm.Python/RevDogLeanFlow.py",
+  "data-folder": "/Lean/Data",
+  "results-destination-folder": "/Lean/Results/lean_09b649a3895a",
+  "parameters": {
+    "vwap-window-size": "10",
+    "twap-slices": "5",
+    "order-size": "10"
+  },
+  "job-user-id": "1",
+  "api-access-token": "",
+  "job-project-id": "1"
+}

@@ -1,0 +1,289 @@
+# RevDog LeanFlow - AI Coding Rules
+
+## Project Context
+
+This is an open-source algorithmic trading system using QuantConnect LEAN engine for VWAP/TWAP strategies on NSE (India). The project must comply with SEBI White Box Execution Algo guidelines.
+
+## File Organization Rules
+
+### Documentation
+
+- All documentation files (\*.md) MUST be placed in `docs/` directory
+- Never create README.md, CONTRIBUTING.md, or other docs in project root
+- Exceptions: Only LICENSE and .env.example can be in root
+- Use proper markdown formatting with headers, code blocks, and examples
+
+### Code Structure
+
+- Python strategy code goes in `src/strategies/`
+- Data fetching scripts go in `src/data/`
+- Utility modules go in `src/utils/`
+- Configuration files go in `src/config/`
+- Frontend code (React) goes in `frontend/src/`
+- Backend API code (FastAPI) goes in `backend/`
+- Tests go in `tests/` with test\_ prefix
+
+### Configuration Files
+
+- Use `.env` for secrets (never commit)
+- Provide `.env.example` with placeholder values
+- Use `settings.yaml` for non-sensitive configs
+- Keep LEAN config in `src/config/config.json`
+
+## Technology Stack
+
+### Backend
+
+- Python 3.11+
+- QuantConnect LEAN (.NET 6.0)
+- FastAPI for REST API
+- SQLAlchemy + SQLite for database
+- Pydantic for data validation
+
+### Frontend
+
+- React 18 + TypeScript
+- Ant Design for UI components
+- Vite for build tooling
+- @ant-design/charts or Recharts for visualization
+- TanStack Query for data fetching
+
+### DevOps
+
+- Docker + Docker Compose for containerization
+- pytest for Python testing
+- GitHub Actions for CI/CD
+
+## Coding Standards
+
+### Python
+
+- Follow PEP 8 style guide
+- Use type hints for all function signatures
+- Use docstrings for classes and public methods
+- Prefer dataclasses or Pydantic models over dicts
+- Maximum line length: 100 characters
+
+Example:
+
+```python
+from typing import Optional
+from pydantic import BaseModel, validator
+
+class StrategyConfig(BaseModel):
+    """Configuration for VWAP/TWAP strategy."""
+
+    vwap_window: int
+    twap_slices: int
+    order_size: int
+
+    @validator('vwap_window')
+    def validate_window(cls, v: int) -> int:
+        if v < 10 or v > 500:
+            raise ValueError('VWAP window must be between 10 and 500')
+        return v
+```
+
+### TypeScript/React
+
+- Use functional components with hooks
+- Use TypeScript strict mode
+- Prefer named exports over default exports
+- Use Ant Design components consistently
+- Keep components small (<200 lines)
+
+Example:
+
+```tsx
+import { Card, Statistic } from "antd";
+import type { FC } from "react";
+
+interface MetricsProps {
+  sharpe: number;
+  returns: number;
+}
+
+export const MetricsCard: FC<MetricsProps> = ({ sharpe, returns }) => {
+  return (
+    <Card>
+      <Statistic title="Sharpe Ratio" value={sharpe} precision={2} />
+    </Card>
+  );
+};
+```
+
+### API Design
+
+- Use RESTful conventions
+- Prefix all API routes with `/api/`
+- Use WebSocket at `/ws/` for real-time data
+- Return consistent JSON structure:
+
+```json
+{
+  "status": "success",
+  "data": {...},
+  "error": null
+}
+```
+
+## SEBI Compliance Rules
+
+### Critical Requirements
+
+- Never remove or bypass OPS (Orders Per Second) limiter (max 10)
+- Always implement kill switch for drawdown > 5%
+- Log all trades with timestamps for audit trail
+- Never add AI/ML decision-making (would make it Black Box)
+- Only use rule-based VWAP/TWAP logic (White Box compliant)
+
+### Forbidden Implementations
+
+- ❌ Sentiment analysis for trade decisions
+- ❌ Machine learning models for predictions
+- ❌ Dynamic strategy parameter adjustment based on AI
+- ❌ Any "black box" algorithm logic
+- ✅ Only transparent, rule-based execution algos
+
+## Testing Requirements
+
+### Must Write Tests For
+
+- VWAP/TWAP calculation logic
+- Risk control functions (OPS limiter, kill switch)
+- API endpoints
+- Database models
+
+### Test Structure
+
+```python
+# tests/test_vwap.py
+import pytest
+from src.strategies.vwap import calculate_vwap
+
+def test_vwap_calculation():
+    """Test VWAP calculation with sample data."""
+    prices = [100, 101, 102]
+    volumes = [1000, 1500, 2000]
+    expected = 101.11  # Weighted average
+
+    result = calculate_vwap(prices, volumes)
+    assert abs(result - expected) < 0.01
+```
+
+## Git Commit Messages
+
+Use conventional commits format:
+
+- `feat: add live trading WebSocket endpoint`
+- `fix: correct VWAP calculation for zero volume`
+- `docs: update API documentation`
+- `test: add tests for risk controls`
+- `refactor: extract config validation logic`
+- `chore: update dependencies`
+
+## Docker Best Practices
+
+- Use multi-stage builds to minimize image size
+- Don't run as root user in containers
+- Use `.dockerignore` to exclude unnecessary files
+- Pin dependency versions in requirements.txt
+- Set proper health checks
+
+## Security Rules
+
+### Credentials
+
+- Never hardcode API keys or secrets
+- Always use environment variables
+- Provide .env.example with dummy values
+- Document required env vars in docs/SETUP.md
+
+### Zerodha API
+
+- Store access tokens encrypted
+- Implement token refresh logic
+- Use static IP whitelisting
+- Log all API calls for audit
+
+## Documentation Requirements
+
+### Every Feature Must Have
+
+1. Technical documentation in `docs/`
+2. Code comments for complex logic
+3. API documentation (for endpoints)
+4. Example usage in docstrings
+
+### User Documentation Structure
+
+```
+docs/
+├── ENGINEERING_DESIGN.md     # System architecture
+├── USER_GUIDE.md             # How to use the system
+├── API_REFERENCE.md          # API endpoints
+├── SETUP.md                  # Installation instructions
+├── SEBI_COMPLIANCE.md        # Compliance notes
+└── CONTRIBUTING.md           # Contribution guidelines
+```
+
+## Performance Considerations
+
+- Use rolling windows (O(1)) instead of recalculating VWAP each time
+- Implement database connection pooling
+- Cache static data (NSE holidays, symbol info)
+- Use WebSocket for live data, not polling
+- Lazy load historical data in UI
+
+## Open Source Community Rules
+
+- Write beginner-friendly documentation
+- Include examples in all docs
+- Keep setup process simple (ideally `docker-compose up`)
+- Respond to issues within 48 hours
+- Accept PRs that follow these rules
+- Maintain changelog in docs/CHANGELOG.md
+
+## Error Handling
+
+- Always catch specific exceptions, not generic Exception
+- Log errors with context (timestamp, symbol, parameters)
+- Return user-friendly error messages in API
+- Never expose stack traces to frontend in production
+
+Example:
+
+```python
+try:
+    result = kite.historical_data(token, from_date, to_date)
+except KiteException as e:
+    logger.error(f"Kite API error: {e.message}", extra={"token": token})
+    raise DataFetchError(f"Failed to fetch data for {symbol}")
+```
+
+## Dependencies Management
+
+- Pin major versions in requirements.txt
+- Document why each major dependency is used
+- Regularly update dependencies (monthly)
+- Run security scans on dependencies
+
+## AI Assistant Instructions
+
+When asked to generate code:
+
+1. Ask clarifying questions if requirements are ambiguous
+2. Suggest best practices and alternatives
+3. Generate tests along with implementation
+4. Update relevant documentation
+5. Check for SEBI compliance implications
+6. Consider open-source contributor experience
+
+## Project-Specific Conventions
+
+- Use `symbol` not `ticker` or `stock` (consistent terminology)
+- Currency amounts in paise (integers) for calculations, format to ₹ for display
+- Timestamps always in UTC, convert to IST for display
+- File naming: use snake_case for Python, PascalCase for React components
+- Database table names: plural (trades, backtest_runs)
+- API endpoints: plural resources (/api/backtests, /api/trades)
